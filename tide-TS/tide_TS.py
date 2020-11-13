@@ -14,12 +14,15 @@ ji = 0
 with open('Tidal_data.txt') as xtide_file:
     for lineNum, line in enumerate(xtide_file, 1):
         ji += 1
-        #print("Line: %i, Lenght: %i" % (ji, len(line)))
+        #print("Line: %i, Lenght: %i" % (ji, len(line.split())))
+        #print("Lenght: %i" % (len(line.strip("\n"))))
+        #print(line)
+        line = line.strip('\n').strip('\r')
         temp = line.strip().split()
         if lineNum < firstline and temp[0] in ['January', 'February', 'March', 'April',  'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']:
             year = int(temp[1])
             #print(year)
-        if lineNum > firstline and len(line) == 77:
+        if lineNum > firstline and len(line) == 76:
             #a = type(temp[0][0])
             i = 0
             spaces = 0
@@ -39,9 +42,11 @@ with open('Tidal_data.txt') as xtide_file:
                 elif line[c] == ' ':
                     spaces += 1
                 elif c == len(line) - 1 and is_set:
-                    splitList.append(line[i:c])
+                    splitList.append(line[i:])
 
             moon = ''
+            #print(line.split())
+            #print('Splitlit bef',splitList)
             if splitList[0][0].isdigit() or splitList[0] in ['LQtr', 'New', 'FQtr', 'Full']:
                 if splitList[0][0].isdigit():
                     repeat_Check = splitList[-1] + '-%i' % year
@@ -71,6 +76,7 @@ with open('Tidal_data.txt') as xtide_file:
             # if value lines
             elif splitList[0][0] in ['H', 'L'] and not repeated:
                 iter = 0
+                #print('splitList',splitList)
                 for element in splitList:
                     if element[0] in ['H', 'L']:
                         if element[1:] != '9999':
@@ -81,6 +87,7 @@ with open('Tidal_data.txt') as xtide_file:
                         if element != '9999':
                             elevation[iter - 7].append(element)
                         iter += 1
+#print(elevation)
 print('Input file has been read...')
 import csv
 print('Writing time series to file TS-%i.csv ...'% year)
